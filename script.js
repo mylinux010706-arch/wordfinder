@@ -3,7 +3,7 @@ let words = []
 const PRIORITY = ["x", "q", "v", "z", "j", "k"]
 const VALID = /^[a-z]{3,}$/
 
-fetch("wordlistr.txt")
+fetch("wordlist.txt")
   .then(r => r.text())
   .then(t => {
     words = t
