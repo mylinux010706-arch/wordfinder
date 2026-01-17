@@ -1,107 +1,86 @@
 let words = []
 
-const PURE_WORD_REGEX = /^[a-z]{3,}$/
-const HARD_PRIORITY = ["x", "q", "v", "z", "j", "k"]
+const PRIORITY = ["x", "q", "v", "z", "j", "k"]
+const VALID = /^[a-z]{3,}$/
 
 fetch("wordlistr.txt")
-  .then(res => res.text())
-  .then(text => {
-    words = text
+  .then(r => r.text())
+  .then(t => {
+    words = t
       .toLowerCase()
       .split("\n")
       .map(w => w.trim())
-      .filter(w => PURE_WORD_REGEX.test(w))
+      .filter(w => VALID.test(w))
       .filter(w => w[0] !== w[1])
   })
 
-const input = document.getElementById("search")
+const search = document.getElementById("search")
 const result = document.getElementById("result")
-const limitSelect = document.getElementById("limitSelect")
-const modeSelect = document.getElementById("modeSelect")
-const endingInput = document.getElementById("endingInput")
+const mode = document.getElementById("mode")
+const limitSel = document.getElementById("limit")
 const info = document.getElementById("info")
 
-let debounceTimer = null
+let timer = null
 
-modeSelect.addEventListener("change", () => {
-  endingInput.style.display =
-    modeSelect.value === "hard" ? "block" : "none"
-  runSearch()
-})
+search.addEventListener("input", run)
+mode.addEventListener("change", run)
+limitSel.addEventListener("change", run)
 
-input.addEventListener("input", runSearch)
-endingInput.addEventListener("input", runSearch)
-limitSelect.addEventListener("change", runSearch)
+function run() {
+  clearTimeout(timer)
 
-function runSearch() {
-  clearTimeout(debounceTimer)
-
-  debounceTimer = setTimeout(() => {
+  timer = setTimeout(() => {
     result.innerHTML = ""
     info.textContent = ""
 
-    const value = input.value.toLowerCase()
+    const value = search.value.toLowerCase()
     if (!value) return
 
-    const limitValue = limitSelect.value
-    const limit = limitValue === "all" ? Infinity : parseInt(limitValue, 10)
+    const limitVal = limitSel.value
+    const limit = limitVal === "all" ? Infinity : parseInt(limitVal, 10)
 
-    let shown = 0
-    let totalFound = 0
-    const fragment = document.createDocumentFragment()
+    const collected = []
+    const used = new Set()
 
-    if (modeSelect.value === "normal") {
-      for (const word of words) {
-        if (word.startsWith(value)) {
-          totalFound++
-          if (shown < limit) {
-            fragment.appendChild(makeItem(word))
-            shown++
+    if (mode.value === "hard") {
+      for (const end of PRIORITY) {
+        for (const word of words) {
+          if (
+            word.startsWith(value) &&
+            word.endsWith(end) &&
+            !used.has(word)
+          ) {
+            collected.push(word)
+            used.add(word)
+            if (collected.length >= limit) break
           }
         }
+        if (collected.length >= limit) break
       }
     }
 
-    if (modeSelect.value === "hard") {
-      let matched = false
-
-      for (const letter of HARD_PRIORITY) {
-        for (const word of words) {
-          if (word.startsWith(value) && word.endsWith(letter)) {
-            totalFound++
-            if (shown < limit) {
-              fragment.appendChild(makeItem(word))
-              shown++
-            }
-            matched = true
-          }
-        }
-        if (matched) break
-      }
-
-      if (!matched) {
-        for (const word of words) {
-          if (word.startsWith(value)) {
-            totalFound++
-            if (shown < limit) {
-              fragment.appendChild(makeItem(word))
-              shown++
-            }
-          }
-        }
+    for (const word of words) {
+      if (
+        word.startsWith(value) &&
+        !used.has(word)
+      ) {
+        collected.push(word)
+        used.add(word)
+        if (collected.length >= limit) break
       }
     }
 
-    result.appendChild(fragment)
+    const frag = document.createDocumentFragment()
+    for (const w of collected) {
+      const li = document.createElement("li")
+      li.textContent = w
+      frag.appendChild(li)
+    }
 
-    if (limitValue === "all") {
-      info.textContent = `${totalFound} words have been found!`
+    result.appendChild(frag)
+
+    if (limitVal === "all") {
+      info.textContent = collected.length + " words have been found!"
     }
   }, 120)
-}
-
-function makeItem(text) {
-  const li = document.createElement("li")
-  li.textContent = text
-  return li
 }
