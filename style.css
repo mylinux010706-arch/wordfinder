@@ -62,10 +62,16 @@ select {
   font-size: 14px;
 }
 
+.info {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgb(120, 120, 120);
+}
+
 ul {
   list-style: none;
   padding: 0;
-  margin-top: 15px;
+  margin-top: 12px;
   max-height: 260px;
   overflow-y: auto;
 }
