@@ -1,0 +1,79 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: linear-gradient(
+    135deg,
+    rgb(102, 126, 234),
+    rgb(118, 75, 162)
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title {
+  color: rgb(255, 255, 255);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: rgb(255, 255, 255);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 16px;
+  color: rgb(50, 50, 50);
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid rgb(220, 220, 220);
+  outline: none;
+}
+
+input:focus {
+  border-color: rgb(102, 126, 234);
+}
+
+select {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgb(200, 200, 200);
+  font-size: 14px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+li {
+  padding: 10px;
+  background: rgb(243, 244, 246);
+  margin-bottom: 8px;
+  border-radius: 6px;
+  font-size: 15px;
+}

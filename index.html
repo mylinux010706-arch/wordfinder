@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Last Letter Word Finder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page-title">TYPE YOUR LETTER</div>
+
+<div class="container">
+  <h2>Last Letter Word Finder</h2>
+
+  <input
+    type="text"
+    id="search"
+    placeholder="Type your letters..."
+    autocomplete="off"
+  >
+
+  <select id="limitSelect">
+    <option value="10">Show 10</option>
+    <option value="50" selected>Show 50</option>
+    <option value="100">Show 100</option>
+    <option value="500">Show 500</option>
+  </select>
+
+  <ul id="result"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+1
