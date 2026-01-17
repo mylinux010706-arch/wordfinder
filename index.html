@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Last Letter Word Finder</title>
+  <title>Word Finder</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,38 +10,30 @@
 <div class="page-title">TYPE YOUR LETTER</div>
 
 <div class="container">
-  <h2>Last Letter Word Finder</h2>
 
   <input
     type="text"
     id="search"
-    placeholder="Type your letters..."
+    placeholder="Type starting letters (ex: ira)"
     autocomplete="off"
   >
 
-  <select id="modeSelect">
-    <option value="normal" selected>Normal Search</option>
+  <select id="mode">
+    <option value="normal">Normal Search</option>
     <option value="hard">Hard Ending Priority</option>
   </select>
 
-  <input
-    type="text"
-    id="endingInput"
-    placeholder="Type ending letter (example: q)"
-    maxlength="1"
-    style="display:none;"
-  >
-
-  <select id="limitSelect">
+  <select id="limit">
     <option value="10">Show 10</option>
     <option value="50" selected>Show 50</option>
     <option value="100">Show 100</option>
     <option value="all">Show All</option>
   </select>
 
-  <div id="info" class="info"></div>
+  <div id="info"></div>
 
   <ul id="result"></ul>
+
 </div>
 
 <script src="script.js"></script>
