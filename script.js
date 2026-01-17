@@ -1,7 +1,7 @@
 let words = []
 
 const PURE_WORD_REGEX = /^[a-z]{3,}$/
-const HARD_LETTERS = ["q", "z", "x", "j", "k", "v"]
+const HARD_PRIORITY = ["x", "q", "v", "z", "j", "k"]
 
 fetch("wordlistr.txt")
   .then(res => res.text())
@@ -40,6 +40,9 @@ function runSearch() {
     result.innerHTML = ""
     info.textContent = ""
 
+    const value = input.value.toLowerCase()
+    if (!value) return
+
     const limitValue = limitSelect.value
     const limit = limitValue === "all" ? Infinity : parseInt(limitValue, 10)
 
@@ -48,14 +51,11 @@ function runSearch() {
     const fragment = document.createDocumentFragment()
 
     if (modeSelect.value === "normal") {
-      const value = input.value.toLowerCase()
-      if (!value) return
-
       for (const word of words) {
         if (word.startsWith(value)) {
           totalFound++
           if (shown < limit) {
-            fragment.appendChild(createItem(word))
+            fragment.appendChild(makeItem(word))
             shown++
           }
         }
@@ -63,25 +63,32 @@ function runSearch() {
     }
 
     if (modeSelect.value === "hard") {
-      const end = endingInput.value.toLowerCase()
-      if (!end) return
+      let matched = false
 
-      const priority = [
-        end,
-        ...HARD_LETTERS.filter(l => l !== end)
-      ]
-
-      for (const letter of priority) {
+      for (const letter of HARD_PRIORITY) {
         for (const word of words) {
-          if (word.endsWith(letter)) {
+          if (word.startsWith(value) && word.endsWith(letter)) {
             totalFound++
             if (shown < limit) {
-              fragment.appendChild(createItem(word))
+              fragment.appendChild(makeItem(word))
+              shown++
+            }
+            matched = true
+          }
+        }
+        if (matched) break
+      }
+
+      if (!matched) {
+        for (const word of words) {
+          if (word.startsWith(value)) {
+            totalFound++
+            if (shown < limit) {
+              fragment.appendChild(makeItem(word))
               shown++
             }
           }
         }
-        if (totalFound > 0) break
       }
     }
 
@@ -93,7 +100,7 @@ function runSearch() {
   }, 120)
 }
 
-function createItem(text) {
+function makeItem(text) {
   const li = document.createElement("li")
   li.textContent = text
   return li
