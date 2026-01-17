@@ -1,6 +1,5 @@
 let words = []
 
-// hanya huruf a-z & minimal 3 huruf
 const PURE_WORD_REGEX = /^[a-z]{3,}$/
 
 fetch("wordlistr.txt")
@@ -10,8 +9,8 @@ fetch("wordlistr.txt")
       .toLowerCase()
       .split("\n")
       .map(w => w.trim())
-      .filter(w => PURE_WORD_REGEX.test(w)) // no angka/simbol
-      .filter(w => w[0] !== w[1])           // no aa, aaaa, bb, bbbb
+      .filter(w => PURE_WORD_REGEX.test(w)) 
+      .filter(w => w[0] !== w[1])
   })
 
 const input = document.getElementById("search")
@@ -56,7 +55,6 @@ function runSearch() {
 
     result.appendChild(fragment)
 
-    // tampilkan info HANYA jika Show All
     if (limitValue === "all") {
       info.textContent = `${totalFound} words have been found!`
     }
