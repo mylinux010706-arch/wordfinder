@@ -1,6 +1,6 @@
 let words = []
 
-const PRIORITY = ["x", "q", "v", "z", "j", "k"]
+const PRIORITY = ["q", "x", "v", "z", "j", "k"]
 const VALID = /^[a-z]{3,}$/
 
 fetch("wordlist.txt")
