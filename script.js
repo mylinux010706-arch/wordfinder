@@ -1,57 +1,86 @@
-* {
-  box-sizing: border-box;
-}
+let words = []
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+const PRIORITY = ["q", "x", "v", "z", "j", "k"]
+const VALID = /^[a-z]{3,}$/
 
-.page-title {
-  color: white;
-  font-weight: bold;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-}
+fetch("wordlistr.txt")
+  .then(r => r.text())
+  .then(t => {
+    words = t
+      .toLowerCase()
+      .split("\n")
+      .map(w => w.trim())
+      .filter(w => VALID.test(w))
+      .filter(w => w[0] !== w[1])
+  })
 
-.container {
-  width: 420px;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-}
+const search = document.getElementById("search")
+const result = document.getElementById("result")
+const mode = document.getElementById("mode")
+const limitSel = document.getElementById("limit")
+const info = document.getElementById("info")
 
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  font-size: 14px;
-}
+let timer = null
 
-#info {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #666;
-}
+search.addEventListener("input", run)
+mode.addEventListener("change", run)
+limitSel.addEventListener("change", run)
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 15px;
-  max-height: 300px;
-  overflow-y: auto;
-}
+function run() {
+  clearTimeout(timer)
 
-li {
-  padding: 8px;
-  background: #f0f0f0;
-  margin-bottom: 6px;
-  border-radius: 4px;
+  timer = setTimeout(() => {
+    result.innerHTML = ""
+    info.textContent = ""
+
+    const value = search.value.toLowerCase()
+    if (!value) return
+
+    const limitVal = limitSel.value
+    const limit = limitVal === "all" ? Infinity : parseInt(limitVal, 10)
+
+    const collected = []
+    const used = new Set()
+
+    if (mode.value === "hard") {
+      for (const end of PRIORITY) {
+        for (const word of words) {
+          if (
+            word.startsWith(value) &&
+            word.endsWith(end) &&
+            !used.has(word)
+          ) {
+            collected.push(word)
+            used.add(word)
+            if (collected.length >= limit) break
+          }
+        }
+        if (collected.length >= limit) break
+      }
+    }
+
+    for (const word of words) {
+      if (
+        word.startsWith(value) &&
+        !used.has(word)
+      ) {
+        collected.push(word)
+        used.add(word)
+        if (collected.length >= limit) break
+      }
+    }
+
+    const frag = document.createDocumentFragment()
+    for (const w of collected) {
+      const li = document.createElement("li")
+      li.textContent = w
+      frag.appendChild(li)
+    }
+
+    result.appendChild(frag)
+
+    if (limitVal === "all") {
+      info.textContent = collected.length + " words have been found!"
+    }
+  }, 120)
 }
